@@ -4,16 +4,37 @@ import UserPool from '../UserPool';
 
 function Register() {
   const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [familyName, setFamilyName] = useState('');
+  const [givenName, setGivenName] = useState('');
+  const [gender, setGender] = useState('');
+  const [birthdate, setBirthdate] = useState('');
 
   const onSubmit = (e) => {
     e.preventDefault();
     const attributeList = [];
     attributeList.push(
       new CognitoUserAttribute({
-        Name: 'email',
-        Value: email,
+        Name: 'family_name',
+        Value: familyName,
+      })
+    );
+    attributeList.push(
+      new CognitoUserAttribute({
+        Name: 'given_name',
+        Value: givenName
+      })
+    );
+    attributeList.push(
+      new CognitoUserAttribute({
+        Name: 'gender',
+        Value: gender
+      })
+    );
+    attributeList.push(
+      new CognitoUserAttribute({
+        Name: 'birthdate',
+        Value: birthdate
       })
     );
     UserPool.signUp(username, password, attributeList, null, (err, data) => {
@@ -37,11 +58,32 @@ function Register() {
           onChange={(e) => setUsername(e.target.value)}
         />
         <br />
-        Email:
+        FamilyName:
         <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          type="text"
+          value={familyName}
+          onChange={(e) => setFamilyName(e.target.value)}
+        />
+        <br />
+        GivenName:
+        <input
+          type="text"
+          value={givenName}
+          onChange={(e) => setGivenName(e.target.value)}
+        />
+        <br />
+        Gender:
+        <input
+          type="text"
+          value={gender}
+          onChange={(e) => setGender(e.target.value)}
+        />
+        <br />
+        Birthdate:
+        <input
+          type="text"
+          value={birthdate}
+          onChange={(e) => setBirthdate(e.target.value)}
         />
         <br />
         Password:

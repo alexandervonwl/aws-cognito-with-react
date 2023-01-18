@@ -1,21 +1,40 @@
-import { CognitoUser, CognitoUserAttribute } from 'amazon-cognito-identity-js';
+import { CognitoUserAttribute } from 'amazon-cognito-identity-js';
 import { useState } from 'react';
 import UserPool from '../UserPool';
 
 function Register() {
   const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [verifyProcess, setVerifyProcess] = useState(false);
-  const [OTP, setOTP] = useState('');
+  const [familyName, setFamilyName] = useState('');
+  const [givenName, setGivenName] = useState('');
+  const [gender, setGender] = useState('');
+  const [birthdate, setBirthdate] = useState('');
 
   const onSubmit = (e) => {
     e.preventDefault();
     const attributeList = [];
     attributeList.push(
       new CognitoUserAttribute({
-        Name: 'email',
-        Value: email,
+        Name: 'family_name',
+        Value: familyName,
+      })
+    );
+    attributeList.push(
+      new CognitoUserAttribute({
+        Name: 'given_name',
+        Value: givenName
+      })
+    );
+    attributeList.push(
+      new CognitoUserAttribute({
+        Name: 'gender',
+        Value: gender
+      })
+    );
+    attributeList.push(
+      new CognitoUserAttribute({
+        Name: 'birthdate',
+        Value: birthdate
       })
     );
     UserPool.signUp(username, password, attributeList, null, (err, data) => {
@@ -24,70 +43,58 @@ function Register() {
         alert("Couldn't sign up");
       } else {
         console.log(data);
-        setVerifyProcess(true);
         alert('User Added Successfully');
-      }
-    });
-  };
-
-  const verifyAccount = (e) => {
-    e.preventDefault();
-    const user = new CognitoUser({
-      Username: username,
-      Pool: UserPool,
-    });
-    console.log(user);
-    user.confirmRegistration(OTP, true, (err, data) => {
-      if (err) {
-        console.log(err);
-        alert("Couldn't verify account");
-      } else {
-        console.log(data);
-        alert('Account verified successfully');
-        window.location.href = '/login';
       }
     });
   };
 
   return (
     <div>
-      {verifyProcess == false ? (
-        <form onSubmit={onSubmit}>
-          UserName:
-          <input
-            type="text"
-            value={username.toLowerCase().trim()}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-          <br />
-          Email:
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <br />
-          Password:
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <br />
-          <button type="submit">Register</button>
-        </form>
-      ) : (
-        <form onSubmit={verifyAccount}>
-          Enter the OTP:
-          <input
-            type="text"
-            value={OTP}
-            onChange={(e) => setOTP(e.target.value)}
-          />
-          <br />
-          <button type="submit">Verify</button>
-        </form>
-      )}
+      <form onSubmit={onSubmit}>
+        UserName:
+        <input
+          type="text"
+          value={username.toLowerCase().trim()}
+          onChange={(e) => setUsername(e.target.value)}
+        />
+        <br />
+        FamilyName:
+        <input
+          type="text"
+          value={familyName}
+          onChange={(e) => setFamilyName(e.target.value)}
+        />
+        <br />
+        GivenName:
+        <input
+          type="text"
+          value={givenName}
+          onChange={(e) => setGivenName(e.target.value)}
+        />
+        <br />
+        Gender:
+        <input
+          type="text"
+          value={gender}
+          onChange={(e) => setGender(e.target.value)}
+        />
+        <br />
+        Birthdate:
+        <input
+          type="text"
+          value={birthdate}
+          onChange={(e) => setBirthdate(e.target.value)}
+        />
+        <br />
+        Password:
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <br />
+        <button type="submit">Register</button>
+      </form>
     </div>
   );
 }
